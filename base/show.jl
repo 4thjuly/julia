@@ -821,9 +821,10 @@ function show_type_name(io::IO, tn::Core.TypeName)
     nothing
 end
 
-function show_datatype(io::IO, x::DataType)
+function show_datatype(io::IO, @nospecialize(x::DataType))
+    x = x::DataType  # despite the signature, this sometimes gets inferred for UnionAll
     istuple = x.name === Tuple.name
-    n = length(x.parameters)::Int
+    n = length(x.parameters)
 
     # Print homogeneous tuples with more than 3 elements compactly as NTuple{N, T}
     if istuple && n > 3 && all(i -> (x.parameters[1] === i), x.parameters)
